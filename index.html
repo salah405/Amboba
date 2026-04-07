@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>غاز سريع - أمبوبا</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#667eea">
+</head>
+<body>
+  <header>
+    <div style="font-size: 28px; margin-bottom: 5px;">🛒 غاز سريع</div>
+    <div style="font-size: 16px; opacity: 0.9;">طلب غاز في دقائق ⏱️</div>
+  </header>
+
+  <div class="card">
+    <h3>👤 بيانات العميل</h3>
+    
+    <input id="phoneSearch" placeholder="🔍 ابحث برقم الموبايل" type="tel">
+    <button onclick="searchCustomer()">بحث عن عميل</button>
+    
+    <input id="customerName" placeholder="الاسم الكامل *" required>
+    <input id="customerPhone" placeholder="رقم الموبايل *" type="tel" required>
+    <input id="customerAddress" placeholder="العنوان بالتفصيل *" required>
+    <input id="customerArea" placeholder="المنطقة *" required>
+    
+    <button onclick="getCurrentLocation()" type="button">📍 موقعي الحالي</button>
+    <div id="locationStatus" style="color: #666; font-size: 16px; margin-top: 10px;">
+      اضغط لتحديد الموقع التلقائي
+    </div>
+    <input id="customerLat" type="hidden">
+    <input id="customerLng" type="hidden">
+  </div>
+
+  <div class="card price-card">
+    <div style="font-size: 20px;">سعر الأنبوبة: <span id="gasPrice">100</span> جنيه</div>
+    <div style="font-size: 20px;">سعر التوصيل: <span id="deliveryPrice">20</span> جنيه</div>
+    <hr style="border: none; height: 3px; background: rgba(255,255,255,0.4); margin: 20px 0;">
+    <div class="total">الإجمالي: <span id="totalPrice">120</span> جنيه 💰</div>
+  </div>
+
+  <select id="orderType" style="display: none;">
+    <option value="منزلية">منزلية</option>
+    <option value="تجارية">تجارية</option>
+  </select>
+
+  <button onclick="placeOrder()" style="background: linear-gradient(135deg, #4299e1, #3182ce); font-size: 22px; padding: 25px;">
+    ✅ تأكيد الطلب الآن
+  </button>
+
+  <div id="message"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+  <script src="customer.js"></script>
+  </body>
+  </html>
