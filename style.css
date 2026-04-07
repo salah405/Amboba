@@ -1,0 +1,203 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 15px;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  padding: 25px 20px;
+  border-radius: 25px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  margin-bottom: 25px;
+  position: relative;
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 25px;
+  padding: 2px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.card {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  padding: 30px;
+  border-radius: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+}
+
+.card h3 {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 25px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+input, select {
+  width: 100%;
+  padding: 20px;
+  margin: 12px 0;
+  border: 3px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 18px;
+  background: rgba(255,255,255,0.9);
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 5px rgba(102,126,234,0.15);
+  transform: translateY(-2px);
+}
+
+button {
+  width: 100%;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+  border: none;
+  padding: 20px;
+  border-radius: 20px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 12px 0;
+  transition: all 0.3s;
+  box-shadow: 0 15px 30px rgba(72,187,120,0.3);
+  font-family: inherit;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(72,187,120,0.4);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+.status {
+  padding: 15px 25px;
+  border-radius: 30px;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 18px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.status.new { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+.status.assigned { background: linear-gradient(135deg, #3182ce, #2c5aa0); }
+.status.delivering { background: linear-gradient(135deg, #38a169, #2f855a); }
+.status.done { background: linear-gradient(135deg, #48bb78, #38a169); }
+
+.price-card {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 30px;
+  border-radius: 25px;
+  text-align: center;
+  margin: 25px 0;
+  box-shadow: 0 20px 40px rgba(102,126,234,0.3);
+}
+
+.price-card .total {
+  font-size: 32px;
+  font-weight: 800;
+  margin-top: 15px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 700;
+  margin: 15px 0;
+  transition: all 0.3s;
+}
+
+.map-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(66,153,225,0.4);
+}
+
+.message {
+  padding: 25px;
+  border-radius: 25px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 18px;
+  margin: 25px 0;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.message.success { background: linear-gradient(135deg, #c6f6d5, #9ae6b4); color: #22543d; }
+.message.error { background: linear-gradient(135deg, #fed7d7, #fc8181); color: #742a2a; }
+.message.warning { background: linear-gradient(135deg, #fef5e7, #f6ad55); color: #92400e; }
+.message.info { background: linear-gradient(135deg, #bee3f8, #90cdf4); color: #2a4365; }
+
+.btn-small {
+  width: auto !important;
+  padding: 12px 20px !important;
+  margin: 8px !important;
+  font-size: 16px !important;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #f56565, #e53e3e) !important;
+}
+
+#orders .card, #drivers .card, #customersList .card {
+  margin-bottom: 20px;
+  padding: 25px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 10px; }
+  header { font-size: 20px; padding: 20px 15px; }
+  .card { padding: 25px 20px; }
+  input, button { padding: 18px; font-size: 16px; }
+}
