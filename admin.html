@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>⚙️ الأدمن</header>
+
+<div class="card">
+<input id="gasPrice" placeholder="سعر الأنبوبة">
+<input id="deliveryPrice" placeholder="سعر التوصيل">
+<button onclick="savePrices()">حفظ السعر</button>
+</div>
+
+<div class="card">
+<h3>المندوبين</h3>
+<input id="dName" placeholder="الاسم">
+<input id="dPhone" placeholder="الموبايل">
+<input id="dArea" placeholder="المنطقة">
+<button onclick="addDriver()">إضافة</button>
+<div id="drivers"></div>
+</div>
+
+<button onclick="exportData()">تحميل Excel</button>
+
+<div id="orders"></div>
+
+<script src="firebase.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
