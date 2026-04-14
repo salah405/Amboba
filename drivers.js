@@ -1,35 +1,74 @@
+// ✅ استيراد الأدوات
+import { db } from "./firebase.js";
+import { 
+  collection, 
+  query, 
+  where, 
+  onSnapshot, 
+  doc, 
+  updateDoc, 
+  arrayUnion 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ⚠️ مؤقت (لحد ما نعمل Login)
 const DRIVER_ID = "PUT_DRIVER_ID_HERE";
 
-db.collection("orders")
-.where("driverId","==",DRIVER_ID)
-.onSnapshot(snap=>{
-  let html="";
-  snap.forEach(doc=>{
-    let o=doc.data();
+// ==========================
+// 📦 تحميل الطلبات
+// ==========================
+function loadDriverOrders() {
 
-    html+=`
-      <div class="card">
-        ${o.name}
-        <div>${o.address}</div>
+  const q = query(
+    collection(db, "orders"),
+    where("driverId", "==", DRIVER_ID)
+  );
 
-        <div class="status ${o.status}">${o.status}</div>
+  onSnapshot(q, (snap) => {
+    let html = "";
 
-        ${o.location?`<a target="_blank" href="https://maps.google.com?q=${o.location.lat},${o.location.lng}">📍 موقع</a>`:''}
+    snap.forEach((docSnap) => {
+      let o = docSnap.data();
 
-        <button onclick="update('${doc.id}','delivering')">بدء</button>
-        <button onclick="update('${doc.id}','done')">تم</button>
-      </div>`;
-  });
+      html += `
+        <div class="card">
+          <strong>${o.name}</strong>
+          <div>${o.location || ''}</div>
 
-  orders.innerHTML=html;
-});
+          <div class="status ${o.status}">
+            ${o.status}
+          </div>
 
-function update(id,status){
-  db.collection("orders").doc(id).update({
-    status,
-    updates: firebase.firestore.FieldValue.arrayUnion({
-      status,
-      time:Date.now()
-    })
+          ${
+            o.location && o.location.lat
+              ? `<a target="_blank" href="https://maps.google.com?q=${o.location.lat},${o.location.lng}">📍 موقع</a>`
+              : ""
+          }
+
+          <button onclick="updateStatus('${docSnap.id}', 'delivering')">بدء</button>
+          <button onclick="updateStatus('${docSnap.id}', 'done')">تم</button>
+        </div>
+      `;
+    });
+
+    orders.innerHTML = html;
   });
 }
+
+// ==========================
+// 🔄 تحديث الحالة
+// ==========================
+window.updateStatus = async function (id, status) {
+
+  const orderRef = doc(db, "orders", id);
+
+  await updateDoc(orderRef, {
+    status: status,
+    updates: arrayUnion({
+      status: status,
+      time: Date.now()
+    })
+  });
+};
+
+// تشغيل أول مرة
+loadDriverOrders();
