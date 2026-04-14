@@ -86,5 +86,5 @@ export async function getDriverOrders(driverId) {
 // =========================
 // 👤 Auth (مبدئي)
 // =========================
-
+export { db };
 export { auth };
