@@ -88,3 +88,13 @@ export async function getDriverOrders(driverId) {
 // =========================
 export { db };
 export { auth };
+export async function getInstapayInfo() {
+  const docRef = doc(db, "settings", "payment");
+  const snap = await getDoc(docRef);
+
+  if (snap.exists()) {
+    return snap.data();
+  }
+
+  return null;
+      }
