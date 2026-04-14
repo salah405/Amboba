@@ -8,89 +8,124 @@
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
   <meta name="theme-color" content="#667eea">
+
+  <style>
+    .hidden { display:none; }
+    .payment-box { margin-top:15px; }
+    .instapay-box {
+      background:#f0fdf4;
+      padding:15px;
+      border-radius:10px;
+      margin-top:10px;
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- 🔥 HEADER -->
-  <header>
-    <div style="font-size: 28px;">🛒 غاز سريع</div>
-    <div style="font-size: 16px; opacity: 0.9;">اطلب أنبوبة في أقل من دقيقة ⏱️</div>
-  </header>
+<!-- 🔥 HEADER -->
+<header>
+  <div style="font-size: 28px;">🛒 غاز سريع</div>
+  <div style="font-size: 16px;">اطلب أنبوبة بسهولة ⏱️</div>
+</header>
 
-  <!-- 🔐 LOGIN -->
-  <div class="card" id="loginBox">
-    <h3>🚀 ابدأ</h3>
-    <button onclick="startApp()">ابدأ الطلب</button>
+<!-- 🔐 LOGIN -->
+<div class="card" id="loginBox">
+  <h3>🚀 ابدأ</h3>
+  <button onclick="startApp()">ابدأ الطلب</button>
+</div>
+
+<!-- 🧠 APP -->
+<div id="appContent" style="display:none;">
+
+  <!-- 👤 بيانات -->
+  <div class="card">
+    <h3>👤 بيانات العميل</h3>
+
+    <input id="customerName" placeholder="الاسم الكامل *">
+    <input id="customerPhone" placeholder="رقم الموبايل *" type="tel">
+    <input id="customerAddress" placeholder="العنوان بالتفصيل *">
+    <input id="customerArea" placeholder="المنطقة *">
+
+    <button onclick="getCurrentLocation()">📍 تحديد موقعي</button>
+
+    <div id="locationStatus">لم يتم تحديد الموقع</div>
+
+    <input id="customerLat" type="hidden">
+    <input id="customerLng" type="hidden">
   </div>
 
-  <!-- 👤 FORM -->
-  <div id="appContent" style="display:none;">
-
-    <div class="card">
-      <h3>👤 بيانات العميل</h3>
-
-      <input id="customerName" placeholder="الاسم الكامل *">
-      <input id="customerPhone" placeholder="رقم الموبايل *" type="tel">
-      <input id="customerAddress" placeholder="العنوان بالتفصيل *">
-      <input id="customerArea" placeholder="المنطقة *">
-
-      <button onclick="getCurrentLocation()" type="button">
-        📍 تحديد موقعي
-      </button>
-
-      <div id="locationStatus" style="margin-top:10px; font-size:14px;">
-        لم يتم تحديد الموقع بعد
-      </div>
-
-      <input id="customerLat" type="hidden">
-      <input id="customerLng" type="hidden">
-    </div>
-
-    <!-- 💰 PRICES -->
-    <div class="card price-card">
-      <div>سعر الأنبوبة: <span id="gasPrice">100</span> جنيه</div>
-      <div>سعر التوصيل: <span id="deliveryPrice">20</span> جنيه</div>
-
-      <hr>
-
-      <div class="total">
-        الإجمالي: <span id="totalPrice">120</span> جنيه 💰
-      </div>
-    </div>
-
-    <!-- 🚀 ORDER -->
-    <button onclick="submitOrder()" class="main-btn">
-      ✅ تأكيد الطلب
-    </button>
-
+  <!-- 💰 الأسعار -->
+  <div class="card price-card">
+    <div>سعر الأنبوبة: <span id="gasPrice">100</span> جنيه</div>
+    <div>سعر التوصيل: <span id="deliveryPrice">20</span> جنيه</div>
+    <hr>
+    <div class="total">الإجمالي: <span id="totalPrice">120</span> جنيه 💰</div>
   </div>
 
-  <!-- 💬 MESSAGE -->
-  <div id="message"></div>
+  <!-- 💳 الدفع -->
+  <div class="card payment-box">
+    <h3>💳 طريقة الدفع</h3>
 
-  <!-- 🔥 MODULE SCRIPTS -->
-  <script type="module">
+    <select id="paymentMethod" onchange="handlePaymentChange()">
+      <option value="cash">💵 الدفع عند الاستلام</option>
+      <option value="instapay">📱 الدفع عبر إنستاباي</option>
+    </select>
 
-    import { login, listenToAuth } from "./auth.js";
+    <!-- Instapay -->
+    <div id="instapayBox" class="instapay-box hidden">
+      <p>قم بالتحويل إلى:</p>
+      <strong id="instapayNumber">جارٍ التحميل...</strong>
 
-    // تشغيل التطبيق
-    window.startApp = async function () {
-      await login();
-    };
+      <p style="margin-top:10px;">📌 بعد التحويل اضغط تأكيد الطلب</p>
+    </div>
+  </div>
 
-    // متابعة حالة المستخدم
-    listenToAuth((user) => {
-      if (user) {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("appContent").style.display = "block";
+  <!-- 🚀 زرار -->
+  <button onclick="submitOrder()" class="main-btn">
+    ✅ تأكيد الطلب
+  </button>
+
+</div>
+
+<!-- 💬 رسالة -->
+<div id="message"></div>
+
+<!-- 🔐 AUTH -->
+<script type="module">
+  import { login, listenToAuth } from "./auth.js";
+  import { getInstapayInfo } from "./firebase.js";
+
+  window.startApp = async function () {
+    await login();
+  };
+
+  listenToAuth(async (user) => {
+    if (user) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("appContent").style.display = "block";
+
+      // 🔥 تحميل بيانات إنستاباي
+      const data = await getInstapayInfo();
+      if (data) {
+        document.getElementById("instapayNumber").innerText = data.number || "غير متاح";
       }
-    });
+    }
+  });
 
-  </script>
+  // 💳 تغيير الدفع
+  window.handlePaymentChange = function () {
+    const method = document.getElementById("paymentMethod").value;
 
-  <!-- 🔥 APP LOGIC -->
-  <script type="module" src="app.js"></script>
+    document.getElementById("instapayBox").classList.toggle(
+      "hidden",
+      method !== "instapay"
+    );
+  };
+</script>
+
+<!-- 🔥 APP -->
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
