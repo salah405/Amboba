@@ -4,57 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>غاز سريع - أمبوبا</title>
+
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
   <meta name="theme-color" content="#667eea">
 </head>
+
 <body>
+
+  <!-- 🔥 HEADER -->
   <header>
-    <div style="font-size: 28px; margin-bottom: 5px;">🛒 غاز سريع</div>
-    <div style="font-size: 16px; opacity: 0.9;">طلب غاز في دقائق ⏱️</div>
+    <div style="font-size: 28px;">🛒 غاز سريع</div>
+    <div style="font-size: 16px; opacity: 0.9;">اطلب أنبوبة في أقل من دقيقة ⏱️</div>
   </header>
 
-  <div class="card">
-    <h3>👤 بيانات العميل</h3>
-    
-    <input id="phoneSearch" placeholder="🔍 ابحث برقم الموبايل" type="tel">
-    <button onclick="searchCustomer()">بحث عن عميل</button>
-    
-    <input id="customerName" placeholder="الاسم الكامل *" required>
-    <input id="customerPhone" placeholder="رقم الموبايل *" type="tel" required>
-    <input id="customerAddress" placeholder="العنوان بالتفصيل *" required>
-    <input id="customerArea" placeholder="المنطقة *" required>
-    
-    <button onclick="getCurrentLocation()" type="button">📍 موقعي الحالي</button>
-    <div id="locationStatus" style="color: #666; font-size: 16px; margin-top: 10px;">
-      اضغط لتحديد الموقع التلقائي
+  <!-- 🔐 LOGIN -->
+  <div class="card" id="loginBox">
+    <h3>🚀 ابدأ</h3>
+    <button onclick="startApp()">ابدأ الطلب</button>
+  </div>
+
+  <!-- 👤 FORM -->
+  <div id="appContent" style="display:none;">
+
+    <div class="card">
+      <h3>👤 بيانات العميل</h3>
+
+      <input id="customerName" placeholder="الاسم الكامل *">
+      <input id="customerPhone" placeholder="رقم الموبايل *" type="tel">
+      <input id="customerAddress" placeholder="العنوان بالتفصيل *">
+      <input id="customerArea" placeholder="المنطقة *">
+
+      <button onclick="getCurrentLocation()" type="button">
+        📍 تحديد موقعي
+      </button>
+
+      <div id="locationStatus" style="margin-top:10px; font-size:14px;">
+        لم يتم تحديد الموقع بعد
+      </div>
+
+      <input id="customerLat" type="hidden">
+      <input id="customerLng" type="hidden">
     </div>
-    <input id="customerLat" type="hidden">
-    <input id="customerLng" type="hidden">
+
+    <!-- 💰 PRICES -->
+    <div class="card price-card">
+      <div>سعر الأنبوبة: <span id="gasPrice">100</span> جنيه</div>
+      <div>سعر التوصيل: <span id="deliveryPrice">20</span> جنيه</div>
+
+      <hr>
+
+      <div class="total">
+        الإجمالي: <span id="totalPrice">120</span> جنيه 💰
+      </div>
+    </div>
+
+    <!-- 🚀 ORDER -->
+    <button onclick="submitOrder()" class="main-btn">
+      ✅ تأكيد الطلب
+    </button>
+
   </div>
 
-  <div class="card price-card">
-    <div style="font-size: 20px;">سعر الأنبوبة: <span id="gasPrice">100</span> جنيه</div>
-    <div style="font-size: 20px;">سعر التوصيل: <span id="deliveryPrice">20</span> جنيه</div>
-    <hr style="border: none; height: 3px; background: rgba(255,255,255,0.4); margin: 20px 0;">
-    <div class="total">الإجمالي: <span id="totalPrice">120</span> جنيه 💰</div>
-  </div>
-
-  <select id="orderType" style="display: none;">
-    <option value="منزلية">منزلية</option>
-    <option value="تجارية">تجارية</option>
-  </select>
-
-  <button onclick="placeOrder()" style="background: linear-gradient(135deg, #4299e1, #3182ce); font-size: 22px; padding: 25px;">
-    ✅ تأكيد الطلب الآن
-  </button>
-
+  <!-- 💬 MESSAGE -->
   <div id="message"></div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="firebase.js"></script>
-  <script src="app.js"></script>
-  <script src="customer.js"></script>
-  </body>
-  </html>
+  <!-- 🔥 MODULE SCRIPTS -->
+  <script type="module">
+
+    import { login, listenToAuth } from "./auth.js";
+
+    // تشغيل التطبيق
+    window.startApp = async function () {
+      await login();
+    };
+
+    // متابعة حالة المستخدم
+    listenToAuth((user) => {
+      if (user) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("appContent").style.display = "block";
+      }
+    });
+
+  </script>
+
+  <!-- 🔥 APP LOGIC -->
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
