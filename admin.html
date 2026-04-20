@@ -1,36 +1,60 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header>⚙️ الأدمن</header>
+<h2>⚙️ لوحة التحكم</h2>
 
+<!-- 💰 الأسعار -->
 <div class="card">
-<input id="gasPrice" placeholder="سعر الأنبوبة">
-<input id="deliveryPrice" placeholder="سعر التوصيل">
-<button onclick="savePrices()">حفظ السعر</button>
+  <h3>💰 الأسعار</h3>
+
+  <input id="gasPrice" placeholder="سعر الأنبوبة">
+  <input id="deliveryPrice" placeholder="سعر التوصيل">
+
+  <button onclick="savePrices()">💾 حفظ</button>
 </div>
 
+<!-- 💳 إنستاباي -->
 <div class="card">
-<h3>المندوبين</h3>
-<input id="dName" placeholder="الاسم">
-<input id="dPhone" placeholder="الموبايل">
-<input id="dArea" placeholder="المنطقة">
-<button onclick="addDriver()">إضافة</button>
-<div id="drivers"></div>
+  <h3>💳 إنستاباي</h3>
+
+  <input id="instaNumber" placeholder="رقم / لينك إنستاباي">
+
+  <button onclick="saveInstapay()">💾 حفظ</button>
 </div>
 
-<button onclick="exportData()">تحميل Excel</button>
+<!-- 🛵 المندوبين -->
+<div class="card">
+  <h3>🛵 المندوبين</h3>
 
-<div id="orders"></div>
+  <input id="dName" placeholder="اسم المندوب">
+  <input id="dPhone" placeholder="رقم الموبايل">
+  <input id="dArea" placeholder="المنطقة">
 
-<script src="firebase.js"></script>
-<script src="admin.js"></script>
+  <button onclick="addDriver()">➕ إضافة</button>
+
+  <div id="drivers"></div>
+</div>
+
+<!-- 📦 الطلبات -->
+<div class="card">
+  <h3>📦 الطلبات</h3>
+
+  <div id="orders"></div>
+</div>
+
+<!-- 📤 تصدير -->
+<button onclick="exportData()">📤 تحميل الطلبات</button>
+
+<script type="module" src="admin.js"></script>
 
 </body>
 </html>
