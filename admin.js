@@ -1,31 +1,30 @@
-// ✅ استيراد الدوال من firebase.js
-import { getOrders, assignDriver } from "./firebase.js";
-import { 
-  collection, 
-  onSnapshot, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc, 
-  getDocs 
+import { db } from "./firebase.js";
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+  getDocs,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { db } from "./firebase.js";
-
-// ==========================
+// =====================
 // 🚀 تحميل كل البيانات
-// ==========================
+// =====================
 loadAll();
 
 function loadAll() {
   loadPrices();
   loadDrivers();
   loadOrders();
+  loadInstapay();
 }
 
-// ==========================
-// 💰 PRICES
-// ==========================
+// =====================
+// 💰 الأسعار
+// =====================
 window.savePrices = async function () {
   await updateDoc(doc(db, "settings", "prices"), {
     gas: +gasPrice.value,
@@ -34,18 +33,34 @@ window.savePrices = async function () {
 };
 
 function loadPrices() {
-  onSnapshot(doc(db, "settings", "prices"), (docSnap) => {
-    if (docSnap.exists()) {
-      let d = docSnap.data();
+  onSnapshot(doc(db, "settings", "prices"), (snap) => {
+    if (snap.exists()) {
+      let d = snap.data();
       gasPrice.value = d.gas;
       deliveryPrice.value = d.delivery;
     }
   });
 }
 
-// ==========================
-// 🛵 DRIVERS
-// ==========================
+// =====================
+// 💳 إنستاباي
+// =====================
+window.saveInstapay = async function () {
+  await updateDoc(doc(db, "settings", "payment"), {
+    number: instaNumber.value
+  });
+};
+
+async function loadInstapay() {
+  const snap = await getDoc(doc(db, "settings", "payment"));
+  if (snap.exists()) {
+    instaNumber.value = snap.data().number;
+  }
+}
+
+// =====================
+// 🛵 المندوبين
+// =====================
 window.addDriver = async function () {
   await addDoc(collection(db, "drivers"), {
     name: dName.value,
@@ -53,6 +68,10 @@ window.addDriver = async function () {
     area: dArea.value,
     active: true
   });
+
+  dName.value = "";
+  dPhone.value = "";
+  dArea.value = "";
 };
 
 function loadDrivers() {
@@ -87,23 +106,22 @@ window.deleteDriver = async function (id) {
   await deleteDoc(doc(db, "drivers", id));
 };
 
-// ==========================
-// 📦 ORDERS
-// ==========================
-async function loadOrders() {
+// =====================
+// 📦 الطلبات
+// =====================
+function loadOrders() {
 
-  // تحميل المندوبين مرة واحدة
-  const driversSnap = await getDocs(collection(db, "drivers"));
+  onSnapshot(collection(db, "orders"), async (snap) => {
 
-  let options = "";
-  driversSnap.forEach((d) => {
-    if (d.data().active) {
-      options += `<option value="${d.id}">${d.data().name}</option>`;
-    }
-  });
+    const driversSnap = await getDocs(collection(db, "drivers"));
 
-  // متابعة الطلبات Live
-  onSnapshot(collection(db, "orders"), (snap) => {
+    let options = "";
+    driversSnap.forEach(d => {
+      if (d.data().active) {
+        options += `<option value="${d.id}">${d.data().name}</option>`;
+      }
+    });
+
     let html = "";
 
     snap.forEach((docSnap) => {
@@ -112,7 +130,7 @@ async function loadOrders() {
       html += `
         <div class="card">
           <strong>${o.name}</strong>
-          <div>${o.location || ''}</div>
+          <div>${o.address}</div>
 
           <select onchange="assignOrder('${docSnap.id}', this.value)">
             <option value="">اختار مندوب</option>
@@ -133,12 +151,15 @@ async function loadOrders() {
 window.assignOrder = async function (id, driverId) {
   if (!driverId) return;
 
-  await assignDriver(id, driverId);
+  await updateDoc(doc(db, "orders", id), {
+    driverId,
+    status: "assigned"
+  });
 };
 
-// ==========================
-// 📤 EXPORT
-// ==========================
+// =====================
+// 📤 تصدير
+// =====================
 window.exportData = async function () {
   const snap = await getDocs(collection(db, "orders"));
 
