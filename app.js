@@ -68,8 +68,8 @@ window.getCurrentLocation = function () {
 // 💰 تحديث السعر
 // ==========================
 function updateTotal() {
-  const gas = parseFloat(document.getElementById("gas").innerText);
-  const delivery = parseFloat(document.getElementById("delivery").innerText);
+  const gas = parseFloat(document.getElementById("gasPrice").innerText);
+  const delivery = parseFloat(document.getElementById("deliveryPrice").innerText);
 
   document.getElementById("totalPrice").innerText = gas + delivery;
 }
